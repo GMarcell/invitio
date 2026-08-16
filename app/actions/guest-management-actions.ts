@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireEditAccess } from "@/lib/auth-helpers";
+import { sendRemindersForInvitation } from "@/lib/reminders";
 
 export async function importGuests(invitationId: string, rawRows: unknown) {
   await requireEditAccess(invitationId);
@@ -77,6 +78,21 @@ export async function addGuestManually(invitationId: string, raw: unknown) {
   });
   revalidatePath(`/invitations/${invitationId}/guests`);
   return { ok: true };
+}
+
+export async function sendRemindersNow(invitationId: string) {
+  await requireEditAccess(invitationId);
+  const invitation = await prisma.invitation.findUnique({
+    where: { id: invitationId },
+    select: { id: true, title: true, slug: true, rsvpDeadline: true, eventDate: true },
+  });
+  if (!invitation) return { error: "Invitation not found." };
+  if (!invitation.rsvpDeadline) {
+    return { error: "Set an RSVP deadline on the invitation before sending reminders." };
+  }
+  const sent = await sendRemindersForInvitation(invitation);
+  revalidatePath(`/invitations/${invitationId}/guests`);
+  return { ok: true, sent };
 }
 
 export async function deleteGuest(invitationId: string, guestId: string) {

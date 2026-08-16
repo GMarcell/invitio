@@ -55,6 +55,35 @@ export function rsvpConfirmationHtml(invitationTitle: string, status: string): s
   `;
 }
 
+export function reminderEmailHtml(opts: {
+  name: string;
+  title: string;
+  link: string;
+  deadline: Date;
+}): string {
+  const deadline = new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(opts.deadline);
+
+  return `
+    <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
+      <h2 style="color: #111827;">Friendly reminder — ${opts.title}</h2>
+      <p>Hi ${opts.name},</p>
+      <p>We haven't heard from you yet! Please let us know if you can make it to
+         <strong>${opts.title}</strong> by <strong>${deadline}</strong>.</p>
+      <p style="margin: 28px 0;">
+        <a href="${opts.link}" style="background-color: #e11d48; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+          Respond to your invitation
+        </a>
+      </p>
+      <p style="color: #6b7280; font-size: 13px;">If you've already responded, please ignore this email.</p>
+    </div>
+  `;
+}
+
 export function hostRsvpNotificationHtml(invitationTitle: string, name: string, status: string): string {
   return `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">

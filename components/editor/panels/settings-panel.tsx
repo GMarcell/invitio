@@ -8,7 +8,7 @@ import {
   deleteInvitation,
   removeCollaborator,
 } from "@/app/actions/invitation-actions";
-import { Badge, Button, Input, Label, Spinner } from "@/components/ui";
+import { Badge, Button, Input, Label, Spinner, Toggle } from "@/components/ui";
 import type { EditorForm } from "@/components/editor/types";
 
 export function SettingsPanel({
@@ -18,6 +18,10 @@ export function SettingsPanel({
   onPublish,
   collaborators,
   invitationId,
+  enableReminders,
+  setEnableReminders,
+  reminderOffsetDays,
+  setReminderOffsetDays,
 }: {
   form: EditorForm;
   setForm: React.Dispatch<React.SetStateAction<EditorForm>>;
@@ -25,6 +29,10 @@ export function SettingsPanel({
   onPublish: () => void;
   collaborators: { id: string; email: string; role: string; status: string }[];
   invitationId: string;
+  enableReminders: boolean;
+  setEnableReminders: React.Dispatch<React.SetStateAction<boolean>>;
+  reminderOffsetDays: number;
+  setReminderOffsetDays: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const router = useRouter();
   const [collabEmail, setCollabEmail] = useState("");
@@ -143,6 +151,35 @@ export function SettingsPanel({
         <p className="mt-2 text-xs text-zinc-400">
           Invitees get access once they sign in with the same email.
         </p>
+      </div>
+
+      <div className="border-t border-zinc-100 pt-5">
+        <h3 className="text-sm font-semibold text-zinc-900">Automated reminders</h3>
+        <p className="mt-1 text-xs text-zinc-400">
+          Email pending guests who haven&apos;t responded yet. A scheduled job runs
+          periodically — guests are emailed once, a few days before your RSVP deadline.
+        </p>
+        <div className="mt-3 space-y-3">
+          <div className="flex items-center justify-between rounded-lg border border-zinc-200 px-3 py-2.5">
+            <div>
+              <p className="text-sm font-medium text-zinc-800">Send automatic reminders</p>
+              <p className="text-xs text-zinc-400">Requires an RSVP deadline to be set</p>
+            </div>
+            <Toggle checked={enableReminders} onChange={setEnableReminders} />
+          </div>
+          <div>
+            <Label htmlFor="reminderOffset">Send reminders this many days before the deadline</Label>
+            <Input
+              id="reminderOffset"
+              type="number"
+              min={1}
+              max={60}
+              value={reminderOffsetDays}
+              onChange={(e) => setReminderOffsetDays(Math.max(1, Math.min(60, Number(e.target.value) || 7)))}
+              disabled={!enableReminders}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="border-t border-zinc-100 pt-5">

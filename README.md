@@ -82,6 +82,27 @@ The seed script creates a demo host and a live wedding invitation:
 - Gift tracker (cash / physical / other, thank-you-sent tracking)
 - Guestbook wishes wall with delete
 
+### Automated RSVP reminders
+- **Scheduled:** enable *Automated reminders* in the editor Settings tab, pick how many
+days before the RSVP deadline to send, and call the cron endpoint on a schedule.
+  Guests who haven't responded are emailed once (tracked per guest, so no spam):
+
+  ```bash
+  curl -X POST https://your-app.com/api/cron/reminders \
+       -H "Authorization: Bearer $CRON_SECRET"
+  ```
+
+  Wire it to any cron service — e.g. Vercel Cron via `vercel.json`:
+
+  ```json
+  { "crons": [{ "path": "/api/cron/reminders", "schedule": "0 9 * * *" }] }
+  ```
+
+  or a system/cloud cron (cron-job.org, GitHub Actions) hitting the URL daily.
+- **Manual:** the guests dashboard has an *Email pending* button that sends reminders
+  immediately to all pending guests with an email on file.
+- Emails dry-run to the console until you add a `RESEND_API_KEY`.
+
 ### Co-hosts
 Invite a partner or organizer by email. They get editing access once they sign in
 with the same email.
@@ -121,8 +142,9 @@ prisma/
 - `DATABASE_URL` — Postgres connection string (docker-compose defaults provided)
 - `AUTH_SECRET` — NextAuth session secret (generate with `openssl rand -base64 32`)
 - `NEXT_PUBLIC_APP_URL` — base URL used for share links, QR codes and OG tags
-- `RESEND_API_KEY` — optional; enables real transactional email (RSVP confirmations
-  and host notifications). Without it, emails are logged to the console.
+- `RESEND_API_KEY` — optional; enables real transactional email (RSVP confirmations,
+  host notifications and reminders). Without it, emails are logged to the console.
+- `CRON_SECRET` — bearer token protecting `/api/cron/reminders`
 
 ## Out of scope for v1 (per PRD)
 

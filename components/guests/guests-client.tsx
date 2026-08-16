@@ -18,6 +18,7 @@ import {
   deleteGuest,
   deleteRsvp,
   importGuests,
+  sendRemindersNow,
 } from "@/app/actions/guest-management-actions";
 import { Badge, Button, Input, Spinner } from "@/components/ui";
 import { cn } from "@/lib/utils";
@@ -101,6 +102,7 @@ function GuestsTab({ data, baseUrl }: { data: GuestsData; baseUrl: string }) {
   const [pending, startTransition] = useTransition();
   const [newGuest, setNewGuest] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [reminderMsg, setReminderMsg] = useState<string | null>(null);
 
   const rsvpByGuest = useMemo(() => {
     const map = new Map<string, GuestsData["rsvps"][number]>();
@@ -206,6 +208,18 @@ function GuestsTab({ data, baseUrl }: { data: GuestsData; baseUrl: string }) {
     });
   }
 
+  function emailAllPending() {
+    startTransition(async () => {
+      const res = await sendRemindersNow(data.id);
+      if (res?.error) {
+        setReminderMsg(res.error);
+      } else {
+        setReminderMsg(`Reminder email sent to ${res.sent} guest(s).`);
+        router.refresh();
+      }
+    });
+  }
+
   async function copyReminder(name: string) {
     const msg = `Halo ${name}! Kami mengundang Anda untuk acara "${data.title}". Mohon konfirmasi kehadiran Anda di sini ya: ${inviteUrl} 🙏`;
     try {
@@ -263,10 +277,24 @@ function GuestsTab({ data, baseUrl }: { data: GuestsData; baseUrl: string }) {
       <div className="grid gap-5 lg:grid-cols-2">
         {/* Pending */}
         <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <div className="mb-3 flex items-center gap-2">
-            <BellRing className="h-4 w-4 text-amber-600" />
-            <h3 className="font-semibold text-zinc-900">Waiting for response ({stats.pending})</h3>
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <BellRing className="h-4 w-4 text-amber-600" />
+              <h3 className="font-semibold text-zinc-900">Waiting for response ({stats.pending})</h3>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={emailAllPending}
+              disabled={pending || pendingGuests.length === 0}
+              title="Send a reminder email to all pending guests with an email on file"
+            >
+              <Mail className="h-3.5 w-3.5" /> Email pending
+            </Button>
           </div>
+          {reminderMsg && (
+            <p className="mb-2 text-sm font-medium text-emerald-600">{reminderMsg}</p>
+          )}
           {pendingGuests.length === 0 ? (
             <p className="text-sm text-zinc-400">Everyone on your guest list has responded 🎉</p>
           ) : (

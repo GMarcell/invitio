@@ -56,7 +56,10 @@ async function main() {
 
   const demoInvite = await prisma.invitation.upsert({
     where: { slug: "raka-and-aisyah-wedding" },
-    update: {},
+    update: {
+      enableReminders: true,
+      reminderOffsetDays: 7,
+    },
     create: {
       slug: "raka-and-aisyah-wedding",
       title: "Raka & Aisyah",
@@ -79,6 +82,8 @@ async function main() {
       showCalendar: true,
       showGuestbook: true,
       showGift: true,
+      enableReminders: true,
+      reminderOffsetDays: 7,
       ownerId: demo.id,
       templateId: weddingTpl?.id,
       theme: {

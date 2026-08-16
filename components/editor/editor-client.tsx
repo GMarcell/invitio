@@ -55,6 +55,8 @@ export function EditorClient({ data }: { data: EditorInvitationData }) {
   });
   const [mealOptions, setMealOptions] = useState<string[]>(data.mealOptions);
   const [questions, setQuestions] = useState<QuestionDef[]>(data.customQuestions);
+  const [enableReminders, setEnableReminders] = useState(data.enableReminders);
+  const [reminderOffsetDays, setReminderOffsetDays] = useState(data.reminderOffsetDays);
   const [status, setStatus] = useState(data.status);
   const [saving, setSaving] = useState(false);
   const [saveState, setSaveState] = useState<"idle" | "saved" | "error">("idle");
@@ -119,6 +121,8 @@ export function EditorClient({ data }: { data: EditorInvitationData }) {
       hasMealOption: toggles.hasMealOption,
       mealOptions,
       customQuestions: questions,
+      enableReminders,
+      reminderOffsetDays,
       status: nextStatus as "draft" | "active" | "past",
     });
 
@@ -235,6 +239,10 @@ export function EditorClient({ data }: { data: EditorInvitationData }) {
                 onPublish={() => publish()}
                 collaborators={data.collaborators}
                 invitationId={data.id}
+                enableReminders={enableReminders}
+                setEnableReminders={setEnableReminders}
+                reminderOffsetDays={reminderOffsetDays}
+                setReminderOffsetDays={setReminderOffsetDays}
               />
             )}
           </div>

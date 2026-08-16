@@ -117,6 +117,10 @@ model Invitation {
   showGuestbook Boolean @default(true)
   showGift      Boolean @default(false)
 
+  // automated RSVP reminders (cron-driven)
+  enableReminders    Boolean @default(false)
+  reminderOffsetDays Int     @default(7) // send reminder this many days before the RSVP deadline
+
   // guest book gallery toggle
   allowGuestPhotos Boolean @default(false)
 
@@ -155,6 +159,7 @@ model Guest {
   source       String   @default("manual") // manual | import
   rsvpId       String?  @unique
   rsvp         Rsvp?    @relation(fields: [rsvpId], references: [id])
+  reminderSentAt DateTime? // set once a reminder email has been sent (prevents re-sending)
   createdAt    DateTime @default(now())
 
   @@index([invitationId])

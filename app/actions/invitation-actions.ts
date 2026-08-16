@@ -53,6 +53,8 @@ const updateInvitationSchema = z.object({
   hasMealOption: z.boolean(),
   mealOptions: z.array(z.string()),
   customQuestions: z.array(questionSchema),
+  enableReminders: z.boolean(),
+  reminderOffsetDays: z.number().int().min(1).max(60),
   status: z.enum(["draft", "active", "past"]),
 });
 
@@ -137,6 +139,8 @@ export async function updateInvitation(id: string, raw: UpdateInvitationInput) {
       hasMealOption: data.hasMealOption,
       mealOptions: data.mealOptions as object,
       customQuestions: data.customQuestions as object,
+      enableReminders: data.enableReminders,
+      reminderOffsetDays: data.reminderOffsetDays,
       status: data.status,
     },
   });

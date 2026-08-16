@@ -132,6 +132,8 @@ export type EditorInvitationData = Omit<SerializedInvitation, "theme"> & {
   themeOverrides: Partial<TemplateTheme>;
   /** Template default theme (shown in the design tab) */
   templateTheme: TemplateTheme;
+  enableReminders: boolean;
+  reminderOffsetDays: number;
   collaborators: {
     id: string;
     email: string;
@@ -142,6 +144,8 @@ export type EditorInvitationData = Omit<SerializedInvitation, "theme"> & {
 
 export function serializeEditorInvitation(inv: PrismaInvite & {
   collaborators?: { id: string; email: string; role: string; status: string }[];
+  enableReminders?: boolean;
+  reminderOffsetDays?: number;
 }): EditorInvitationData {
   const templateTheme = (inv.template?.theme ?? null) as TemplateTheme | null;
   const base = themeForInvitation(inv);
@@ -149,6 +153,8 @@ export function serializeEditorInvitation(inv: PrismaInvite & {
     ...serializeInvitation(inv),
     themeOverrides: (inv.theme ?? {}) as Partial<TemplateTheme>,
     templateTheme: templateTheme ?? base,
+    enableReminders: inv.enableReminders ?? false,
+    reminderOffsetDays: inv.reminderOffsetDays ?? 7,
     collaborators: (inv.collaborators ?? []).map((c) => ({
       id: c.id,
       email: c.email,
