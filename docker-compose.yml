@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: invitio-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: invitio
+      POSTGRES_PASSWORD: invitio
+      POSTGRES_DB: invitio
+    ports:
+      - "5432:5432"
+    volumes:
+      - invitio_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U invitio -d invitio"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  invitio_pgdata:

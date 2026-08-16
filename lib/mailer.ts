@@ -1,0 +1,66 @@
+// Transactional email helper.
+//
+// Uses Resend when RESEND_API_KEY is set (https://resend.com — free tier available).
+// Without a key it logs the email to the console so flows can be developed locally.
+
+type EmailInput = {
+  to: string;
+  subject: string;
+  html: string;
+};
+
+export async function sendEmail({ to, subject, html }: EmailInput) {
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    console.log(`[mailer:dry-run] To: ${to} | Subject: ${subject}`);
+    return { ok: true, dryRun: true } as const;
+  }
+
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: process.env.RESEND_FROM_EMAIL ?? "Invitio <onboarding@resend.dev>",
+      to,
+      subject,
+      html,
+    }),
+  });
+
+  if (!res.ok) {
+    console.error(`[mailer:error] ${res.status} ${await res.text()}`);
+    return { ok: false, dryRun: false } as const;
+  }
+
+  return { ok: true, dryRun: false } as const;
+}
+
+export function rsvpConfirmationHtml(invitationTitle: string, status: string): string {
+  const label =
+    status === "yes"
+      ? "attending 🎉"
+      : status === "maybe"
+        ? "maybe attending 🤔"
+        : "unable to attend 😢";
+  return `
+    <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
+      <h2 style="color: #111827;">RSVP received — ${invitationTitle}</h2>
+      <p>Thanks for responding! We've recorded that you are <strong>${label}</strong>.</p>
+      <p style="color: #6b7280; font-size: 14px;">You can update your response anytime by opening the invitation link again.</p>
+    </div>
+  `;
+}
+
+export function hostRsvpNotificationHtml(invitationTitle: string, name: string, status: string): string {
+  return `
+    <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
+      <h2 style="color: #111827;">New RSVP — ${invitationTitle}</h2>
+      <p><strong>${name}</strong> responded: <strong>${status}</strong></p>
+      <p style="color: #6b7280; font-size: 14px;">View the full list in your Invitio dashboard.</p>
+    </div>
+  `;
+}
