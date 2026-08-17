@@ -1,6 +1,9 @@
 import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/prisma";
 import { themeForInvitation } from "@/lib/templates";
+import { hasAccessToSlug } from "@/lib/access";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -9,7 +12,12 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
     where: { slug },
     include: { template: true },
   });
-  if (!invitation) return new Response("Not found", { status: 404 });
+  // Drafts and access-protected invitations must not leak title/date via the
+  // OG image (used by WhatsApp/link previews) before the viewer unlocks them.
+  if (!invitation || invitation.status === "draft") return new Response("Not found", { status: 404 });
+  if (invitation.accessCode && !(await hasAccessToSlug(slug))) {
+    return new Response("Not found", { status: 404 });
+  }
 
   const theme = themeForInvitation(invitation);
   const c = theme.colors;

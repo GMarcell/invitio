@@ -97,19 +97,21 @@ export async function sendRemindersNow(invitationId: string) {
 
 export async function deleteGuest(invitationId: string, guestId: string) {
   await requireEditAccess(invitationId);
-  await prisma.guest.delete({ where: { id: guestId } });
+  // Scope the delete to this invitation so a record from another invitation
+  // can't be removed by id (IDOR).
+  await prisma.guest.deleteMany({ where: { id: guestId, invitationId } });
   revalidatePath(`/invitations/${invitationId}/guests`);
 }
 
 export async function deleteRsvp(invitationId: string, rsvpId: string) {
   await requireEditAccess(invitationId);
-  await prisma.rsvp.delete({ where: { id: rsvpId } });
+  await prisma.rsvp.deleteMany({ where: { id: rsvpId, invitationId } });
   revalidatePath(`/invitations/${invitationId}/guests`);
 }
 
 export async function deleteMessage(invitationId: string, messageId: string) {
   await requireEditAccess(invitationId);
-  await prisma.guestbookMessage.delete({ where: { id: messageId } });
+  await prisma.guestbookMessage.deleteMany({ where: { id: messageId, invitationId } });
   revalidatePath(`/invitations/${invitationId}/guests`);
 }
 

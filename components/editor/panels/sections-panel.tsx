@@ -35,6 +35,8 @@ export function SectionsPanel({
               ["showCalendar", "Add to Calendar", "Google Calendar, Outlook and .ics download"],
               ["showGuestbook", "Guestbook wishes", "Guests can leave messages on the page"],
               ["showGift", "Gift section", "Bank / e-wallet details for monetary gifts"],
+              ["showGallery", "Photo gallery", "Show event photos on the invitation page"],
+              ["allowGuestPhotos", "Guest photo uploads", "Guests can share their own photos (needs the gallery on)"],
             ] as const
           ).map(([key, label, hint]) => (
             <div

@@ -161,7 +161,13 @@ function GuestsTab({ data, baseUrl }: { data: GuestsData; baseUrl: string }) {
       rows.push([r.name, r.email ?? "", r.phone ?? "", r.status, String(r.guestCount), r.mealChoice ?? "", r.note ?? ""]);
     }
 
-    const csv = rows.map((row) => row.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
+    // Neutralize spreadsheet formula injection: cells starting with = + - @ or
+    // a tab are prefixed with a single quote so Excel/Sheets treat them as text
+    // instead of executing them as formulas.
+    const csvSafe = (cell: string) => (/^[=+\-@\t]/.test(cell) ? `'${cell}` : cell);
+    const csv = rows
+      .map((row) => row.map((c) => `"${csvSafe(c).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

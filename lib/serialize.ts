@@ -1,4 +1,5 @@
 import { themeForInvitation, type TemplateTheme } from "@/lib/templates";
+import { publicUrl } from "@/lib/storage";
 
 type PrismaInvite = {
   id: string;
@@ -20,6 +21,8 @@ type PrismaInvite = {
   showCalendar: boolean;
   showGuestbook: boolean;
   showGift: boolean;
+  showGallery: boolean;
+  allowGuestPhotos: boolean;
   hasMealOption: boolean;
   mealOptions: unknown;
   customQuestions: unknown;
@@ -27,9 +30,20 @@ type PrismaInvite = {
   template?: { name: string; emoji: string | null; gradient: string | null; theme: unknown } | null;
   giftAccounts?: { id: string; label: string; accountHolder: string; bankName: string | null; accountNumber: string; qrImage: string | null }[];
   messages?: { id: string; name: string; message: string; createdAt: Date }[];
+  photos?: { id: string; objectKey: string; thumbObjectKey: string | null; caption: string | null; uploadedBy: string; guestName: string | null; createdAt: Date }[];
 };
 
 export type QuestionDef = { id: string; label: string; required?: boolean };
+
+export type PhotoView = {
+  id: string;
+  url: string;
+  thumbUrl: string | null;
+  caption: string | null;
+  uploadedBy: string;
+  guestName: string | null;
+  createdAt: string;
+};
 
 export type SerializedInvitation = {
   id: string;
@@ -51,6 +65,8 @@ export type SerializedInvitation = {
   showCalendar: boolean;
   showGuestbook: boolean;
   showGift: boolean;
+  showGallery: boolean;
+  allowGuestPhotos: boolean;
   hasMealOption: boolean;
   mealOptions: string[];
   customQuestions: QuestionDef[];
@@ -58,6 +74,7 @@ export type SerializedInvitation = {
   template: { name: string; emoji: string | null; gradient: string | null } | null;
   giftAccounts: { id: string; label: string; accountHolder: string; bankName: string | null; accountNumber: string; qrImage: string | null }[];
   messages: { id: string; name: string; message: string; createdAt: string }[];
+  photos: PhotoView[];
 };
 
 function toQuestions(raw: unknown): QuestionDef[] {
@@ -98,6 +115,8 @@ export function serializeInvitation(inv: PrismaInvite): SerializedInvitation {
     showCalendar: inv.showCalendar,
     showGuestbook: inv.showGuestbook,
     showGift: inv.showGift,
+    showGallery: inv.showGallery,
+    allowGuestPhotos: inv.allowGuestPhotos,
     hasMealOption: inv.hasMealOption,
     mealOptions: toStringArray(inv.mealOptions),
     customQuestions: toQuestions(inv.customQuestions),
@@ -122,6 +141,17 @@ export function serializeInvitation(inv: PrismaInvite): SerializedInvitation {
       }))
       .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
       .slice(0, 60),
+    photos: (inv.photos ?? [])
+      .map((p) => ({
+        id: p.id,
+        url: publicUrl(p.objectKey),
+        thumbUrl: p.thumbObjectKey ? publicUrl(p.thumbObjectKey) : null,
+        caption: p.caption,
+        uploadedBy: p.uploadedBy,
+        guestName: p.guestName,
+        createdAt: p.createdAt.toISOString(),
+      }))
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
   };
 }
 

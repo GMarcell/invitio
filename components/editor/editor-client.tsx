@@ -14,15 +14,17 @@ import { DesignPanel } from "@/components/editor/panels/design-panel";
 import { SectionsPanel } from "@/components/editor/panels/sections-panel";
 import { GiftPanel } from "@/components/editor/panels/gift-panel";
 import { SettingsPanel } from "@/components/editor/panels/settings-panel";
+import { GalleryPanel } from "@/components/editor/panels/gallery-panel";
 import { toLocalInputValue, type EditorForm, type EditorToggles } from "@/components/editor/types";
 
-type Tab = "details" | "design" | "sections" | "gifts" | "settings";
+type Tab = "details" | "design" | "sections" | "gifts" | "gallery" | "settings";
 
 const tabs: { key: Tab; label: string }[] = [
   { key: "details", label: "Details" },
   { key: "design", label: "Design" },
   { key: "sections", label: "Sections" },
   { key: "gifts", label: "Gifts" },
+  { key: "gallery", label: "Gallery" },
   { key: "settings", label: "Settings" },
 ];
 
@@ -51,6 +53,8 @@ export function EditorClient({ data }: { data: EditorInvitationData }) {
     showCalendar: data.showCalendar,
     showGuestbook: data.showGuestbook,
     showGift: data.showGift,
+    showGallery: data.showGallery,
+    allowGuestPhotos: data.allowGuestPhotos,
     hasMealOption: data.hasMealOption,
   });
   const [mealOptions, setMealOptions] = useState<string[]>(data.mealOptions);
@@ -83,6 +87,8 @@ export function EditorClient({ data }: { data: EditorInvitationData }) {
       showCalendar: toggles.showCalendar,
       showGuestbook: toggles.showGuestbook,
       showGift: toggles.showGift,
+      showGallery: toggles.showGallery,
+      allowGuestPhotos: toggles.allowGuestPhotos,
       hasMealOption: toggles.hasMealOption,
       mealOptions,
       customQuestions: questions,
@@ -90,6 +96,7 @@ export function EditorClient({ data }: { data: EditorInvitationData }) {
       template: data.template,
       giftAccounts: data.giftAccounts,
       messages: data.messages,
+      photos: data.photos,
     }),
     [data, form, theme, toggles, mealOptions, questions, status],
   );
@@ -118,6 +125,8 @@ export function EditorClient({ data }: { data: EditorInvitationData }) {
       showCalendar: toggles.showCalendar,
       showGuestbook: toggles.showGuestbook,
       showGift: toggles.showGift,
+      showGallery: toggles.showGallery,
+      allowGuestPhotos: toggles.allowGuestPhotos,
       hasMealOption: toggles.hasMealOption,
       mealOptions,
       customQuestions: questions,
@@ -230,6 +239,9 @@ export function EditorClient({ data }: { data: EditorInvitationData }) {
             )}
             {tab === "gifts" && (
               <GiftPanel invitationId={data.id} giftAccounts={data.giftAccounts} />
+            )}
+            {tab === "gallery" && (
+              <GalleryPanel invitationId={data.id} photos={data.photos} />
             )}
             {tab === "settings" && (
               <SettingsPanel

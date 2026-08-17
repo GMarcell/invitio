@@ -9,6 +9,16 @@ type EmailInput = {
   html: string;
 };
 
+/** Escape user-controlled text before embedding it in email HTML. */
+export function escapeHtml(input: string): string {
+  return input
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export async function sendEmail({ to, subject, html }: EmailInput) {
   const apiKey = process.env.RESEND_API_KEY;
 
@@ -48,7 +58,7 @@ export function rsvpConfirmationHtml(invitationTitle: string, status: string): s
         : "unable to attend 😢";
   return `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
-      <h2 style="color: #111827;">RSVP received — ${invitationTitle}</h2>
+      <h2 style="color: #111827;">RSVP received — ${escapeHtml(invitationTitle)}</h2>
       <p>Thanks for responding! We've recorded that you are <strong>${label}</strong>.</p>
       <p style="color: #6b7280; font-size: 14px;">You can update your response anytime by opening the invitation link again.</p>
     </div>
@@ -70,12 +80,12 @@ export function reminderEmailHtml(opts: {
 
   return `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
-      <h2 style="color: #111827;">Friendly reminder — ${opts.title}</h2>
-      <p>Hi ${opts.name},</p>
+      <h2 style="color: #111827;">Friendly reminder — ${escapeHtml(opts.title)}</h2>
+      <p>Hi ${escapeHtml(opts.name)},</p>
       <p>We haven't heard from you yet! Please let us know if you can make it to
-         <strong>${opts.title}</strong> by <strong>${deadline}</strong>.</p>
+         <strong>${escapeHtml(opts.title)}</strong> by <strong>${deadline}</strong>.</p>
       <p style="margin: 28px 0;">
-        <a href="${opts.link}" style="background-color: #e11d48; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+        <a href="${escapeHtml(opts.link)}" style="background-color: #e11d48; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
           Respond to your invitation
         </a>
       </p>
@@ -87,8 +97,8 @@ export function reminderEmailHtml(opts: {
 export function hostRsvpNotificationHtml(invitationTitle: string, name: string, status: string): string {
   return `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
-      <h2 style="color: #111827;">New RSVP — ${invitationTitle}</h2>
-      <p><strong>${name}</strong> responded: <strong>${status}</strong></p>
+      <h2 style="color: #111827;">New RSVP — ${escapeHtml(invitationTitle)}</h2>
+      <p><strong>${escapeHtml(name)}</strong> responded: <strong>${escapeHtml(status)}</strong></p>
       <p style="color: #6b7280; font-size: 14px;">View the full list in your Invitio dashboard.</p>
     </div>
   `;

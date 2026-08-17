@@ -56,6 +56,10 @@ The seed script creates a demo host and a live wedding invitation:
   — no guest account required; duplicate submissions update the same response
 - Guestbook wishes shown on the page
 - Gift section with masked account numbers (tap-to-reveal) + copy + QR codes
+- Photo gallery — host uploads pre-event photos; guests can add their own (with
+  name/caption) when guest uploads are enabled; delete is host-only. Uploads are
+  auto-resized to an 800px WebP thumbnail for fast mobile grids, with a tap-to-zoom
+  lightbox that loads the full-size original
 - WhatsApp / email / copy-link sharing + QR code of the invite link
 - English / Bahasa Indonesia toggle (persisted per visitor)
 - Optional access-code protection for private events (signed cookie, not exposed to guests)
@@ -70,9 +74,10 @@ The seed script creates a demo host and a live wedding invitation:
 - Live phone-frame preview while you edit
 - Tabs: **Details** (title, date/time + timezone, location + map link, dress code,
   RSVP deadline, description, default language), **Design** (colors + fonts with
-  reset-to-template), **Sections** (countdown/calendar/guestbook/gift toggles, meal
-  options, custom questions), **Gifts** (bank / e-wallet accounts), **Settings**
-  (slug, access code, co-hosts, publish, delete)
+  reset-to-template), **Sections** (countdown/calendar/guestbook/gift/gallery
+  toggles, meal options, custom questions), **Gifts** (bank / e-wallet accounts),
+  **Gallery** (upload/delete event photos), **Settings** (slug, access code,
+  co-hosts, publish, delete)
 
 ### RSVP management (`/invitations/[id]/guests`)
 - Live stats: attending / maybe / declined / pending
@@ -146,10 +151,30 @@ prisma/
   host notifications and reminders). Without it, emails are logged to the console.
 - `CRON_SECRET` — bearer token protecting `/api/cron/reminders`
 
+### Rate limiting
+Guest-facing and auth actions are throttled per IP (and per account for login)
+using a DB-backed sliding-window counter (`RateLimit` table, `lib/rate-limit.ts`):
+
+| Scope | Limit | Window |
+|---|---|---|
+| Login | 10 attempts | 15 min (per IP + email) |
+| Signup | 5 accounts | 1 hour |
+| RSVP | 10 submissions | 15 min (per invite + IP) |
+| Guestbook | 5 wishes | 1 hour (per invite + IP) |
+| Photo uploads (guests) | 10 uploads | 1 hour (per invite + IP) |
+
+Stale counters are pruned weekly by the same cron endpoint that runs reminders.
+To tune limits, edit `RATE_LIMITS` in `lib/rate-limit.ts`.
+- `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`
+  — **optional** Cloudflare R2 credentials for photo storage. Without them photos
+  store to local disk (`.local/uploads`) and are served through `/api/files/...`,
+  which works fine for development and personal use. With them, uploads go to R2
+  and are served from the bucket (or via the same proxy unless `R2_PUBLIC_URL` is
+  set for a public bucket/CDN).
+
 ## Out of scope for v1 (per PRD)
 
-- Scheduled reminder automation (WhatsApp Business API) — v1 ships manual reminder
-  text + email links
+- WhatsApp Business API automation — reminders ship as scheduled email instead
 - In-app payment processing for gifts — v1 is display + copy of account details
 - Seating charts, vendor marketplace, native mobile apps
 - Paid tiers / watermarking (monetization is proposed, not implemented)

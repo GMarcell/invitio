@@ -21,6 +21,7 @@ import { Countdown } from "@/components/invite/countdown";
 import { RsvpForm } from "@/components/invite/rsvp-form";
 import { GiftSection } from "@/components/invite/gift-section";
 import { ShareSection } from "@/components/invite/share-section";
+import { GallerySection } from "@/components/invite/gallery-section";
 import type { SerializedInvitation } from "@/lib/serialize";
 import { googleCalendarUrl, outlookCalendarUrl } from "@/lib/calendar";
 import { addGuestbookMessage } from "@/app/actions/guest-actions";
@@ -307,6 +308,19 @@ export function InvitationView({
         {data.showGuestbook && (
           <section className="px-6 pb-6">
             <Guestbook data={data} lang={lang} preview={mode !== "live"} />
+          </section>
+        )}
+
+        {/* ── Photo gallery ───────────────────────────────── */}
+        {data.showGallery && (
+          <section className="px-6 pb-6">
+            <GallerySection
+              invitationId={data.id}
+              photos={data.photos}
+              allowUpload={data.allowGuestPhotos}
+              lang={lang}
+              preview={mode !== "live"}
+            />
           </section>
         )}
 

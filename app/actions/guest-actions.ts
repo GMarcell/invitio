@@ -1,10 +1,11 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { hostRsvpNotificationHtml, rsvpConfirmationHtml, sendEmail } from "@/lib/mailer";
+import { grantAccessToSlug } from "@/lib/access";
+import { checkRateLimit, clientIp, rateLimitMessage } from "@/lib/rate-limit";
 
 const rsvpSchema = z.object({
   name: z.string().min(1).max(120),
@@ -14,7 +15,12 @@ const rsvpSchema = z.object({
   guestCount: z.coerce.number().int().min(1).max(20).default(1),
   mealChoice: z.string().max(120).optional().or(z.literal("")),
   note: z.string().max(1000).optional().or(z.literal("")),
-  answers: z.record(z.string(), z.string()).optional(),
+  // Custom-question answers: cap both the number of questions and each answer
+  // length so a guest can't store arbitrarily large payloads.
+  answers: z
+    .record(z.string().max(200), z.string().max(1000))
+    .refine((a) => Object.keys(a).length <= 20, { message: "Too many answers." })
+    .optional(),
 });
 
 export async function submitRsvp(invitationId: string, raw: unknown) {
@@ -24,11 +30,26 @@ export async function submitRsvp(invitationId: string, raw: unknown) {
   }
   const data = parsed.data;
 
+  // Throttle RSVP spam per invitation + visitor before touching the database.
+  const ip = await clientIp();
+  const limit = await checkRateLimit("rsvp", `${invitationId}:${ip}`);
+  if (!limit.ok) return { error: rateLimitMessage(limit.retryAfterSeconds) };
+
   const invitation = await prisma.invitation.findUnique({
     where: { id: invitationId },
-    select: { id: true, slug: true, title: true, owner: { select: { email: true } } },
+    select: { id: true, slug: true, title: true, status: true, rsvpDeadline: true, owner: { select: { email: true } } },
   });
   if (!invitation) return { error: "Invitation not found." };
+
+  // Only published, upcoming invitations accept RSVPs (drafts and past events
+  // 404 on the page already; this guards direct calls), and submissions after
+  // the RSVP deadline are rejected so late responses can't skew the guest list.
+  if (invitation.status !== "active") {
+    return { error: "This invitation isn't open for RSVPs right now." };
+  }
+  if (invitation.rsvpDeadline && new Date() > invitation.rsvpDeadline) {
+    return { error: "The RSVP deadline has passed." };
+  }
 
   const name = data.name.trim();
   const phone = data.phone?.trim() || null;
@@ -97,21 +118,29 @@ export async function submitRsvp(invitationId: string, raw: unknown) {
     }
   }
 
-  // Notifications (dry-run to console without RESEND_API_KEY)
+  // Notifications (dry-run to console without RESEND_API_KEY). Await both so
+  // the emails are actually sent before the request completes (fire-and-forget
+  // can be cut short by the serverless runtime).
+  const sends: Promise<unknown>[] = [];
   if (email) {
-    void sendEmail({
-      to: email,
-      subject: `RSVP received — ${invitation.title}`,
-      html: rsvpConfirmationHtml(invitation.title, data.status),
-    });
+    sends.push(
+      sendEmail({
+        to: email,
+        subject: `RSVP received — ${invitation.title}`,
+        html: rsvpConfirmationHtml(invitation.title, data.status),
+      }),
+    );
   }
   if (invitation.owner.email) {
-    void sendEmail({
-      to: invitation.owner.email,
-      subject: `New RSVP — ${invitation.title}`,
-      html: hostRsvpNotificationHtml(invitation.title, name, data.status),
-    });
+    sends.push(
+      sendEmail({
+        to: invitation.owner.email,
+        subject: `New RSVP — ${invitation.title}`,
+        html: hostRsvpNotificationHtml(invitation.title, name, data.status),
+      }),
+    );
   }
+  await Promise.allSettled(sends);
 
   revalidatePath(`/i/${invitation.slug}`);
   return { ok: true };
@@ -125,6 +154,11 @@ const messageSchema = z.object({
 export async function addGuestbookMessage(invitationId: string, raw: unknown) {
   const parsed = messageSchema.safeParse(raw);
   if (!parsed.success) return { error: "Please enter your name and a message." };
+
+  // Throttle guestbook spam per invitation + visitor.
+  const ip = await clientIp();
+  const limit = await checkRateLimit("guestbook", `${invitationId}:${ip}`);
+  if (!limit.ok) return { error: rateLimitMessage(limit.retryAfterSeconds) };
 
   const invitation = await prisma.invitation.findUnique({
     where: { id: invitationId },
@@ -144,13 +178,6 @@ export async function addGuestbookMessage(invitationId: string, raw: unknown) {
   return { ok: true };
 }
 
-const ACCESS_COOKIE = "invitio_access";
-
-function readAccessCookie(value: string | undefined): string[] {
-  if (!value) return [];
-  return value.split(",").filter(Boolean);
-}
-
 export async function verifyAccessCode(slug: string, code: string) {
   const invitation = await prisma.invitation.findUnique({
     where: { slug },
@@ -160,23 +187,7 @@ export async function verifyAccessCode(slug: string, code: string) {
   if (!invitation.accessCode) return { ok: true };
   if (invitation.accessCode !== code.trim()) return { error: "Incorrect code." };
 
-  const store = await cookies();
-  const current = readAccessCookie(store.get(ACCESS_COOKIE)?.value);
-  if (!current.includes(slug)) {
-    current.push(slug);
-    store.set(ACCESS_COOKIE, current.join(","), {
-      httpOnly: true,
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-      path: "/",
-    });
-  }
-
+  await grantAccessToSlug(slug);
   revalidatePath(`/i/${slug}`);
   return { ok: true };
-}
-
-export async function hasAccessToSlug(slug: string): Promise<boolean> {
-  const store = await cookies();
-  return readAccessCookie(store.get(ACCESS_COOKIE)?.value).includes(slug);
 }

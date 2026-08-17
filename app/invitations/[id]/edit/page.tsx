@@ -19,6 +19,7 @@ export default async function EditInvitationPage({ params }: { params: Promise<{
       template: true,
       giftAccounts: { orderBy: { sortOrder: "asc" } },
       collaborators: { orderBy: { createdAt: "asc" } },
+      photos: { orderBy: { createdAt: "desc" } },
     },
   });
   if (!invitation) notFound();

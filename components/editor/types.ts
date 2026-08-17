@@ -19,6 +19,8 @@ export type EditorToggles = {
   showCalendar: boolean;
   showGuestbook: boolean;
   showGift: boolean;
+  showGallery: boolean;
+  allowGuestPhotos: boolean;
   hasMealOption: boolean;
 };
 

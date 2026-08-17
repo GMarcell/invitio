@@ -65,6 +65,22 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+// ─────────────────────────── Rate limiting ───────────────────────────
+// DB-backed sliding-window counters keyed by "scope:identifier" (e.g.
+// "login:1.2.3.4"). Used for login/RSVP/guestbook/photo-upload throttling;
+// a DB table (rather than in-memory) survives restarts and works across
+// instances. Stale rows are pruned periodically.
+
+model RateLimit {
+  id          String   @id @default(uuid())
+  key         String   @unique // e.g. "login:<ip>", "rsvp:<invitationId>:<ip>"
+  windowStart DateTime // start of the current counting window
+  count       Int      @default(0)
+  updatedAt   DateTime @updatedAt
+
+  @@index([windowStart])
+}
+
 // ─────────────────────────── Templates ───────────────────────────
 
 model Template {
@@ -121,8 +137,9 @@ model Invitation {
   enableReminders    Boolean @default(false)
   reminderOffsetDays Int     @default(7) // send reminder this many days before the RSVP deadline
 
-  // guest book gallery toggle
-  allowGuestPhotos Boolean @default(false)
+  // photo gallery toggles
+  showGallery       Boolean @default(false) // show the gallery section on the invitation page
+  allowGuestPhotos  Boolean @default(false) // guests can upload photos to the gallery
 
   templateId String?
   template   Template? @relation(fields: [templateId], references: [id])
@@ -139,10 +156,30 @@ model Invitation {
   giftAccounts  GiftAccount[]
   gifts         Gift[]
   collaborators Collaborator[]
+  photos        Photo[]
 
   @@index([ownerId])
   @@index([status])
   @@index([templateId])
+}
+
+// ─────────────────────────── Photo gallery ───────────────────────────
+
+model Photo {
+  id           String   @id @default(uuid())
+  invitationId String
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  uploadedBy   String   @default("host") // host | guest
+  guestName    String? // name of the guest who uploaded (when uploadedBy = "guest")
+  caption      String?
+  objectKey    String   @unique // storage key (R2 bucket or local .local/uploads)
+  thumbObjectKey String? @unique // generated WebP thumbnail (kept smaller for fast mobile loading)
+  mimeType     String
+  size         Int
+  createdAt    DateTime @default(now())
+
+  @@index([invitationId])
+  @@index([createdAt])
 }
 
 // ─────────────────────────── Invited guests list ───────────────────────────

@@ -49,3 +49,6 @@ next-env.d.ts
 
 # typescript
 *.tsbuildinfo
+
+# local file uploads (dev storage)
+/.local/

@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { serializeInvitation } from "@/lib/serialize";
 import { InvitationView } from "@/components/invite/invitation-view";
 import { LockGate } from "@/components/invite/lock-gate";
-import { hasAccessToSlug } from "@/app/actions/guest-actions";
+import { hasAccessToSlug } from "@/lib/access";
 import { optionalUser } from "@/lib/auth-helpers";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +19,7 @@ async function getInvitation(slug: string) {
       template: true,
       giftAccounts: { orderBy: { sortOrder: "asc" } },
       messages: { orderBy: { createdAt: "desc" } },
+      photos: { orderBy: { createdAt: "desc" } },
     },
   });
 }
@@ -26,7 +27,15 @@ async function getInvitation(slug: string) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const invitation = await getInvitation(slug);
-  if (!invitation) return { title: "Invitation not found" };
+  if (!invitation) return { title: "Invitation not found", robots: { index: false, follow: false } };
+  // Drafts and access-protected invitations must not leak their title or
+  // description in link previews / search results before the viewer unlocks them.
+  if (invitation.status === "draft") {
+    return { title: "Invitation not found", robots: { index: false, follow: false } };
+  }
+  if (invitation.accessCode && !(await hasAccessToSlug(slug))) {
+    return { title: "Private invitation", robots: { index: false, follow: false } };
+  }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
   const title = `${invitation.title}${invitation.subtitle ? ` — ${invitation.subtitle}` : ""}`;
