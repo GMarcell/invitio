@@ -21,11 +21,13 @@ export function BoardingPass() {
           <p className="text-[0.65rem] font-semibold uppercase tracking-[0.4em] text-[#071827]/45">
             Passenger Names
           </p>
-          <h2 className="mt-5 break-words font-serif text-4xl font-medium uppercase leading-[0.92] tracking-[0.06em] sm:text-5xl lg:text-6xl xl:text-7xl">
+          <h2 className="mt-5 break-words font-serif text-base font-medium uppercase leading-[0.92] tracking-[0.03em] sm:text-lg lg:text-xl xl:text-2xl">
             {weddingData.couple.partnerOne}
-            <span className="block pt-2">{weddingData.couple.partnerTwo}</span>
+            <span className="block py-1 font-script text-2xl text-[#071827]/50">&</span>
+            <span className="block">{weddingData.couple.partnerTwo}</span>
           </h2>
           <p className="mt-6 font-script text-4xl text-[#071827]/70">First class love</p>
+          <p className="mt-4 text-[0.62rem] font-bold uppercase tracking-[0.25em] text-[#071827]/40">#GrandPrizeforBeatrix</p>
         </div>
 
         <dl className="grid grid-cols-2 gap-x-5 gap-y-6 border-y border-dashed border-[#071827]/25 py-6">
@@ -48,7 +50,7 @@ export function BoardingPass() {
 
         <div className="relative mt-8 min-h-32">
           <FlightPath className="absolute left-0 top-4 h-24 w-full opacity-80" />
-          <TravelStamp className="absolute left-1 top-3">Tangerang Indonesia</TravelStamp>
+          <img src="/images/wedding/logoGB.jpeg" alt="Tangerang Indonesia stamp" className="absolute left-0 top-0 h-24 w-24 -rotate-12 object-contain" />
           <TravelStamp className="absolute right-2 top-0 rotate-[10deg]">08 Jul 2028</TravelStamp>
           <div className="mx-auto flex h-24 w-36 items-center justify-center border border-[#071827]/25 text-center">
             <div>

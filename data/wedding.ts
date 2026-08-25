@@ -1,10 +1,9 @@
 export const weddingData = {
-  brand: "AreOne",
   headline: "Flight to Forever",
   couple: {
-    partnerOne: "Grand Marcell",
+    partnerOne: "Grand Marcell Imanuel",
     partnerTwo: "Beatrix Sahulata",
-    display: "Grand Marcell & Beatrix",
+    display: "Grand Marcell Imanuel & Beatrix Sahulata",
   },
   date: {
     display: "08.07.2028",
@@ -16,7 +15,7 @@ export const weddingData = {
   },
   destination: "Tangerang, Indonesia",
   venue: {
-    name: "GPIB Yudea",
+    name: "GPIB Jemaat Yudea",
     address: "Tangerang, Banten, Indonesia",
     mapUrl: "https://maps.app.goo.gl/rH1gTTTRqHN7Hre86",
   },
@@ -40,7 +39,8 @@ export const weddingData = {
   images: {
     hero: "/images/wedding/airport.svg",
     couple: "/images/wedding/couple.svg",
-    venue: "/images/wedding/venue.svg",
+    venue:
+      "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80",
     women: "/images/wedding/women.svg",
     men: "/images/wedding/men.svg",
   },

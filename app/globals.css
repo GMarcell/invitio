@@ -34,6 +34,14 @@ html {
   font-family: var(--font-script-display);
 }
 
+.font-dm-serif {
+  font-family: "DM Serif Display", serif;
+}
+
+.font-montserrat {
+  font-family: "Montserrat", sans-serif;
+}
+
 .wedding-site {
   font-family: var(--font-stationery-sans);
   background:
@@ -133,6 +141,18 @@ html {
   animation-range: entry 0% cover 28%;
 }
 
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.19, 1, 0.22, 1),
+    transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.fade-in-section.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .flight-path path {
   animation: flight-dash 7s linear infinite;
 }
@@ -196,6 +216,18 @@ html {
     scroll-behavior: auto !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+/* Countdown flip digit */
+.countdown-top,
+.countdown-bottom {
+  backface-visibility: hidden;
+}
+
+/* Subtle pulse on the seconds block */
+@keyframes countdown-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
 }
 
 /* Hide number input spinners */
