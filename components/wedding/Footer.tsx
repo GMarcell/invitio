@@ -4,7 +4,7 @@ import { weddingData } from "@/data/wedding";
 export function Footer() {
   return (
     <footer id="contact" className="bg-[#071827] px-7 py-16 text-center text-[#F4EFE5] sm:px-10">
-      <p className="font-script text-5xl">{weddingData.couple.display}</p>
+      <p className="break-words px-4 font-script text-4xl sm:text-5xl">{weddingData.couple.display}</p>
       <p className="mx-auto mt-5 max-w-sm text-sm leading-7 text-[#E7DDCA]/72">
         Thank you for being part of our story. We cannot wait to meet you by the lake.
       </p>

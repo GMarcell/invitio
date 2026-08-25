@@ -2,8 +2,13 @@ import { Heart } from "lucide-react";
 import { weddingData } from "@/data/wedding";
 import { SectionHeading } from "./SectionHeading";
 
-const blanks = Array.from({ length: 6 });
-const days = Array.from({ length: 30 }, (_, index) => index + 1);
+// Real calendar layout for the wedding month (Monday-first grid)
+const firstWeekday = new Date(weddingData.date.year, weddingData.date.monthIndex, 1).getDay();
+const blanks = Array.from({ length: (firstWeekday + 6) % 7 });
+const days = Array.from(
+  { length: new Date(weddingData.date.year, weddingData.date.monthIndex + 1, 0).getDate() },
+  (_, index) => index + 1,
+);
 
 export function Calendar() {
   return (

@@ -4,7 +4,7 @@ Design, customize, share and track digital invitations for weddings, birthdays, 
 showers, corporate events and more — no design skills required.
 
 The site's landing page currently showcases a bespoke destination-wedding
-invitation (**Lauren & Marco**, Lake Como) styled after vintage airline boarding
+invitation (**Grand Marcell & Beatrix**, Lake Como) styled after vintage airline boarding
 passes and editorial stationery — see [Homepage](#homepage--lauren--marco) below.
 The full Invitio platform (dashboard, templates, editor, guest pages) remains
 available behind it.
@@ -51,7 +51,7 @@ The seed script creates a demo host and a live wedding invitation:
 | Password | `demo1234` |
 | Live invitation | http://localhost:3000/i/raka-and-aisyah-wedding |
 
-## Homepage — Lauren & Marco
+## Homepage — Grand Marcell & Beatrix
 
 `app/page.tsx` renders a single-page, guest-facing wedding invitation composed
 entirely of presentational React components:
@@ -62,6 +62,10 @@ entirely of presentational React components:
 - Sections: event details, add-to-calendar, destination, venue + map link,
   day-of timeline, dress code, travel & accommodation info, photo gallery,
   RSVP form and footer, with a floating section nav
+- **Background music** — a looping MP3 (`components/wedding/BackgroundMusic.tsx`)
+  starts muted on load (browsers block autoplaying audio) and unmutes on the
+  visitor's first tap; a floating bottom-left button toggles play/pause.
+  Place the track at `public/music/background.mp3` (supply your own licensed file)
 - Fonts are loaded via Google Fonts in `app/layout.tsx`
   (Cormorant Garamond, Great Vibes, Montserrat); theming/paper textures live in
   `app/globals.css`
@@ -152,13 +156,13 @@ app/
   templates/        # Template gallery
 components/
   invite/           # Invitation rendering (view, RSVP form, countdown, gifts…)
-  wedding/          # Lauren & Marco homepage sections (hero, boarding pass,
+  wedding/          # Grand Marcell & Beatrix homepage sections (hero, boarding pass,
                     # venue, travel, gallery, RSVP…)
   editor/           # Editor panels + client
   guests/           # RSVP dashboard tabs
   site/ ui.tsx      # App shell + UI primitives
 data/
-  wedding.ts        # All content for the Lauren & Marco homepage
+  wedding.ts        # All content for the Grand Marcell & Beatrix homepage
 lib/
   generated/prisma/ # Generated Prisma client (do not edit)
   templates.ts      # Template catalog + theme system

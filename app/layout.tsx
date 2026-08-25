@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Lauren & Marco — Destination Wedding Invitation",
+    default: "Grand Marcell & Beatrix — Destination Wedding Invitation",
     template: "%s | Invitio",
   },
   description:

@@ -21,7 +21,7 @@ export function BoardingPass() {
           <p className="text-[0.65rem] font-semibold uppercase tracking-[0.4em] text-[#071827]/45">
             Passenger Names
           </p>
-          <h2 className="mt-5 font-serif text-6xl font-medium uppercase leading-[0.82] tracking-[0.06em] sm:text-7xl">
+          <h2 className="mt-5 break-words font-serif text-4xl font-medium uppercase leading-[0.92] tracking-[0.06em] sm:text-5xl lg:text-6xl xl:text-7xl">
             {weddingData.couple.partnerOne}
             <span className="block pt-2">{weddingData.couple.partnerTwo}</span>
           </h2>
@@ -48,8 +48,8 @@ export function BoardingPass() {
 
         <div className="relative mt-8 min-h-32">
           <FlightPath className="absolute left-0 top-4 h-24 w-full opacity-80" />
-          <TravelStamp className="absolute left-1 top-3">Lake Como Italy</TravelStamp>
-          <TravelStamp className="absolute right-2 top-0 rotate-[10deg]">21 Jun 2025</TravelStamp>
+          <TravelStamp className="absolute left-1 top-3">Tangerang Indonesia</TravelStamp>
+          <TravelStamp className="absolute right-2 top-0 rotate-[10deg]">08 Jul 2028</TravelStamp>
           <div className="mx-auto flex h-24 w-36 items-center justify-center border border-[#071827]/25 text-center">
             <div>
               <Heart className="mx-auto h-4 w-4 text-[#071827]/60" strokeWidth={1.5} />

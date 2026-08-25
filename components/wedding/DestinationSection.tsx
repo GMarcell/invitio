@@ -23,7 +23,7 @@ export function DestinationSection() {
         <Plane className="absolute left-10 top-10 h-5 w-5 rotate-12 text-[#071827]/60" strokeWidth={1.4} />
       </div>
       <TravelStamp className="absolute bottom-10 left-8">First Class Love</TravelStamp>
-      <TravelStamp className="absolute bottom-8 right-8 rotate-[7deg]">Italy 2025</TravelStamp>
+      <TravelStamp className="absolute bottom-8 right-8 rotate-[7deg]">Indonesia 2028</TravelStamp>
     </section>
   );
 }

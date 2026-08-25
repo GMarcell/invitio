@@ -1,4 +1,4 @@
-import { Hotel, Luggage, Plane, ShipWheel } from "lucide-react";
+import { Car, Hotel, Luggage, Plane } from "lucide-react";
 import { weddingData } from "@/data/wedding";
 import { FlightPath } from "./FlightPath";
 import { SectionHeading } from "./SectionHeading";
@@ -7,7 +7,7 @@ import { TravelStamp } from "./TravelStamp";
 export function TravelSection() {
   const items = [
     { icon: Plane, title: "Travel", body: weddingData.travel.arrival },
-    { icon: ShipWheel, title: "Transfer", body: weddingData.travel.transfer },
+    { icon: Car, title: "Transfer", body: weddingData.travel.transfer },
     { icon: Hotel, title: "Accommodation", body: weddingData.travel.accommodation },
   ];
 
@@ -15,7 +15,7 @@ export function TravelSection() {
     <section id="travel" className="relative overflow-hidden bg-[#071827] px-7 py-14 text-[#F4EFE5] sm:px-10">
       <SectionHeading title="Travel" inverted />
       <p className="mx-auto mt-6 max-w-sm text-center text-sm leading-7 text-[#E7DDCA]/72">
-        Arrive slowly, travel light, and leave room for a lakeside weekend of celebration.
+        Arrive slowly, travel light, and leave room for a joyful day of celebration.
       </p>
       <div className="mt-10 space-y-5">
         {items.map(({ icon: Icon, title, body }) => (
@@ -34,7 +34,7 @@ export function TravelSection() {
       </div>
       <FlightPath className="mt-10 h-24 w-full" inverted />
       <TravelStamp className="absolute bottom-5 right-8 rotate-[9deg]" tone="paper">
-        Lake Como
+        Tangerang
       </TravelStamp>
       <Luggage className="absolute left-8 top-10 h-5 w-5 text-[#E7DDCA]/35" strokeWidth={1.4} />
     </section>

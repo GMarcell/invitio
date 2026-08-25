@@ -23,7 +23,7 @@ export function VenueSection() {
       <div className="relative mt-10 aspect-[4/5] overflow-hidden rounded-[16px] border border-[#071827]/15">
         <Image
           src={weddingData.images.venue}
-          alt="Villa Balbianello inspired lakeside wedding venue"
+          alt="GPIB Yudea church wedding venue in Tangerang"
           fill
           sizes="(max-width: 768px) 92vw, 42vw"
           className="object-cover"

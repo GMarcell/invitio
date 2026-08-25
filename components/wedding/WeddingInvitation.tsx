@@ -1,4 +1,5 @@
 import { BoardingPass } from "./BoardingPass";
+import { BackgroundMusic } from "./BackgroundMusic";
 import { Calendar } from "./Calendar";
 import { DestinationSection } from "./DestinationSection";
 import { DressCode } from "./DressCode";
@@ -15,6 +16,7 @@ import { WeddingDetails } from "./WeddingDetails";
 export function WeddingInvitation() {
   return (
     <main className="wedding-site min-h-screen bg-[#071827] text-[#111111]">
+      <BackgroundMusic />
       <Hero />
       <FloatingNav />
       <section className="relative -mt-24 px-4 pb-20 sm:px-6 lg:px-10">
