@@ -20,8 +20,8 @@ export function WeddingInvitation() {
       <Hero />
       <FloatingNav />
       <section className="relative -mt-24 px-4 pb-20 sm:px-6 lg:px-10">
-        <div className="mx-auto grid max-w-7xl items-start gap-8 lg:grid-cols-2 lg:gap-12">
-          <article className="invitation-card reveal-item overflow-hidden shadow-[0_28px_90px_rgba(0,0,0,0.32)] lg:translate-y-8">
+        <div className="mx-auto flex max-w-4xl items-start justify-center">
+          <article className="invitation-card reveal-item w-full overflow-hidden shadow-[0_28px_90px_rgba(0,0,0,0.32)]">
             <BoardingPass />
             <WeddingDetails />
             <Calendar />
