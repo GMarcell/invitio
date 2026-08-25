@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1125" role="img" aria-label="Lake Como villa wedding venue">
+  <defs>
+    <linearGradient id="lake" x1="0" x2="0" y1="0" y2="1">
+      <stop stop-color="#cfc1aa" offset="0"/>
+      <stop stop-color="#899287" offset=".5"/>
+      <stop stop-color="#0b1f30" offset="1"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 .15"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="900" height="1125" fill="url(#lake)"/>
+  <path d="M0 360c138-58 239-78 350-50 155 39 279 10 550-68v883H0z" fill="#071827" opacity=".22"/>
+  <path d="M80 745c210-43 441-53 740-18" stroke="#f4efe5" stroke-width="5" opacity=".35"/>
+  <path d="M185 455h514v210H185z" fill="#ede6d8" opacity=".86"/>
+  <path d="M148 455h590L443 308z" fill="#b8aa94" opacity=".75"/>
+  <path d="M262 510h62v155h-62zm150 0h62v155h-62zm150 0h62v155h-62z" fill="#071827" opacity=".52"/>
+  <path d="M116 665h670v70H116z" fill="#f4efe5" opacity=".68"/>
+  <path d="M0 792c248 45 553 39 900-11v344H0z" fill="#071827" opacity=".58"/>
+  <rect width="900" height="1125" filter="url(#grain)" opacity=".8"/>
+</svg>

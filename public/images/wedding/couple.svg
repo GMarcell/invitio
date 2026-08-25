@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1125" role="img" aria-label="Editorial destination wedding couple">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
+      <stop stop-color="#d8ccb9" offset="0"/>
+      <stop stop-color="#9a907f" offset=".55"/>
+      <stop stop-color="#071827" offset="1"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 .16"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="900" height="1125" fill="url(#bg)"/>
+  <path d="M0 520c142-98 276-139 401-121 178 25 282 163 499 91v635H0z" fill="#071827" opacity=".28"/>
+  <circle cx="378" cy="376" r="62" fill="#f4efe5" opacity=".85"/>
+  <circle cx="500" cy="366" r="66" fill="#cbbba3" opacity=".9"/>
+  <path d="M304 1050l55-510c6-59 43-91 91-92s86 34 93 91l63 511z" fill="#f4efe5" opacity=".92"/>
+  <path d="M465 1050l78-500c10-62 50-96 104-89 45 7 72 42 80 93l75 496z" fill="#111111" opacity=".76"/>
+  <path d="M334 550c49 47 112 71 190 38" stroke="#b8aa94" stroke-width="12" stroke-linecap="round" opacity=".9"/>
+  <path d="M0 882c230-49 474-52 900-4v247H0z" fill="#e7ddca" opacity=".2"/>
+  <rect width="900" height="1125" filter="url(#grain)" opacity=".8"/>
+</svg>

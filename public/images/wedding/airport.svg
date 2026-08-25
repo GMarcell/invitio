@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="Muted airport runway at dusk">
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop stop-color="#7e8179" offset="0"/>
+      <stop stop-color="#d8c8ac" offset=".48"/>
+      <stop stop-color="#071827" offset="1"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 .12"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <rect y="520" width="1600" height="480" fill="#0b1f30" opacity=".72"/>
+  <path d="M0 680c210-44 420-62 620-47 304 23 590 92 980 29v338H0z" fill="#071827" opacity=".82"/>
+  <path d="M214 705h1172" stroke="#ede6d8" stroke-width="5" stroke-dasharray="42 48" opacity=".38"/>
+  <path d="M245 474c250-20 446-29 670-12 112 8 214 37 330 73l-40 22c-261-36-562-47-942-35z" fill="#f4efe5" opacity=".64"/>
+  <path d="M996 432l176-126 55 8-105 138z" fill="#f4efe5" opacity=".58"/>
+  <circle cx="1294" cy="220" r="102" fill="#f4efe5" opacity=".17"/>
+  <rect width="1600" height="1000" filter="url(#grain)" opacity=".75"/>
+</svg>

@@ -3,18 +3,199 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-serif-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --font-script-display: "Great Vibes", "Dancing Script", cursive;
+  --font-app-sans: Arial, Helvetica, sans-serif;
+  --font-app-mono: "Courier New", monospace;
+  --font-stationery-sans: "Montserrat", var(--font-app-sans);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-app-sans);
+  --font-mono: var(--font-app-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.font-serif {
+  font-family: var(--font-serif-display);
+}
+
+.font-script {
+  font-family: var(--font-script-display);
+}
+
+.wedding-site {
+  font-family: var(--font-stationery-sans);
+  background:
+    radial-gradient(circle at 18% 8%, rgba(244, 239, 229, 0.08), transparent 30rem),
+    radial-gradient(circle at 80% 20%, rgba(184, 170, 148, 0.08), transparent 34rem),
+    #071827;
+  overflow-x: hidden;
+}
+
+.paper-panel {
+  position: relative;
+  isolation: isolate;
+}
+
+.paper-panel::before,
+.invitation-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 14%, rgba(7, 24, 39, 0.06) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 80% 32%, rgba(255, 255, 255, 0.12) 0 1px, transparent 1.5px),
+    linear-gradient(100deg, rgba(17, 17, 17, 0.035), transparent 22%, rgba(255, 255, 255, 0.045) 55%, transparent);
+  background-size: 18px 18px, 23px 23px, 100% 100%;
+  mix-blend-mode: multiply;
+  opacity: 0.54;
+}
+
+.invitation-card {
+  position: relative;
+  border: 1px solid rgba(231, 221, 202, 0.24);
+  background: #ede6d8;
+  border-radius: 2px;
+  isolation: isolate;
+}
+
+.ticket-edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: 16px;
+  background-size: 24px 24px;
+  background-repeat: repeat-x;
+}
+
+.ticket-edge-top {
+  top: -1px;
+  background-image: radial-gradient(circle at 12px 0, #071827 0 8px, transparent 8.5px);
+}
+
+.ticket-edge-bottom {
+  bottom: -1px;
+  background-image: radial-gradient(circle at 12px 16px, #071827 0 8px, transparent 8.5px);
+}
+
+.travel-stamp {
+  box-shadow: inset 0 0 0 2px currentColor;
+  filter: contrast(0.9);
+  opacity: 0.88;
+}
+
+.travel-stamp::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px dashed currentColor;
+  border-radius: inherit;
+  opacity: 0.38;
+}
+
+.hero-image {
+  animation: slow-zoom 18s ease-out both;
+}
+
+.hero-rise {
+  animation: hero-rise 1.25s cubic-bezier(0.19, 1, 0.22, 1) both;
+}
+
+.hero-rise:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.hero-rise:nth-child(3) {
+  animation-delay: 0.22s;
+}
+
+.hero-rise:nth-child(4) {
+  animation-delay: 0.32s;
+}
+
+.reveal-item {
+  animation: reveal-soft 0.95s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 28%;
+}
+
+.flight-path path {
+  animation: flight-dash 7s linear infinite;
+}
+
+@keyframes slow-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.07);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-soft {
+  from {
+    opacity: 0;
+    transform: translateY(32px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes flight-dash {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -120;
+  }
+}
+
+@media (max-width: 380px) {
+  .wedding-site h1 span:last-child {
+    font-size: 3.2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
 /* Hide number input spinners */

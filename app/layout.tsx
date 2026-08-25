@@ -1,31 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: {
-    default: "Invitio — Online Invitation Maker",
+    default: "Lauren & Marco — Destination Wedding Invitation",
     template: "%s | Invitio",
   },
   description:
-    "Design, customize and share beautiful digital invitations for weddings, birthdays and events. Track RSVPs in one place — no design skills needed.",
+    "A luxury Lake Como destination wedding invitation inspired by vintage airline tickets, passport stamps and editorial stationery.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className="h-full antialiased"
     >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />

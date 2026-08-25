@@ -1,8 +1,13 @@
 # Invitio — Online Invitation Maker
 
 Design, customize, share and track digital invitations for weddings, birthdays, baby
-showers, corporate events and more — no design skills required. Built from the
-product requirements in `project-requirements.html` (Online Invitation Maker, v1).
+showers, corporate events and more — no design skills required.
+
+The site's landing page currently showcases a bespoke destination-wedding
+invitation (**Lauren & Marco**, Lake Como) styled after vintage airline boarding
+passes and editorial stationery — see [Homepage](#homepage--lauren--marco) below.
+The full Invitio platform (dashboard, templates, editor, guest pages) remains
+available behind it.
 
 ## Stack
 
@@ -45,6 +50,27 @@ The seed script creates a demo host and a live wedding invitation:
 | Email | `demo@invitio.app` |
 | Password | `demo1234` |
 | Live invitation | http://localhost:3000/i/raka-and-aisyah-wedding |
+
+## Homepage — Lauren & Marco
+
+`app/page.tsx` renders a single-page, guest-facing wedding invitation composed
+entirely of presentational React components:
+
+- **Boarding-pass hero** with ticket-edge card, travel stamps, flight-path SVG
+  and slow-zoom imagery; scroll-reveal animations throughout
+  (respects `prefers-reduced-motion`)
+- Sections: event details, add-to-calendar, destination, venue + map link,
+  day-of timeline, dress code, travel & accommodation info, photo gallery,
+  RSVP form and footer, with a floating section nav
+- Fonts are loaded via Google Fonts in `app/layout.tsx`
+  (Cormorant Garamond, Great Vibes, Montserrat); theming/paper textures live in
+  `app/globals.css`
+- All copy, dates, venue, palette and image paths come from one file:
+  **`data/wedding.ts`** — edit it to rebrand the page for another couple/event
+
+> **Note:** the RSVP form on this page is currently presentational only — it does
+> not yet submit anywhere. For a fully wired RSVP flow use the platform's
+> guest-facing pages below.
 
 ## Features
 
@@ -126,9 +152,13 @@ app/
   templates/        # Template gallery
 components/
   invite/           # Invitation rendering (view, RSVP form, countdown, gifts…)
+  wedding/          # Lauren & Marco homepage sections (hero, boarding pass,
+                    # venue, travel, gallery, RSVP…)
   editor/           # Editor panels + client
   guests/           # RSVP dashboard tabs
-  site/ ui/         # App shell + UI primitives
+  site/ ui.tsx      # App shell + UI primitives
+data/
+  wedding.ts        # All content for the Lauren & Marco homepage
 lib/
   generated/prisma/ # Generated Prisma client (do not edit)
   templates.ts      # Template catalog + theme system
@@ -138,6 +168,7 @@ lib/
 prisma/
   schema.prisma     # Data model
   seed.ts           # Templates + demo data
+public/images/wedding/ # Illustrations used by the wedding homepage (SVG)
 ```
 
 ## Configuration
